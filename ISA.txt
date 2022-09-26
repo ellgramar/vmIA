@@ -1,0 +1,55 @@
+32 bit computer
+
+r0-r15:  GPRs (capable of load/store)
+special purpose registers:
+r16     PC (program counter)
+r17     SP (stack pointer)
+r18     LR (link register)
+r19     FP (frame pointer)
+r20     SR (status register)
+         nzct xxxx xxxx xxxx
+            n   indicates that the resulting value is negetive
+            z   indicates that the result of the operation resulted in zero
+            c   indicates that there was a carry or overflow
+            t   indicates that in signed integers, there was an overflow
+
+
+First 4 bits are the Instruction (INST)
+INST 1111 2222 3333 4444 555 6666 7777
+
+0000  
+0001  
+0010  
+0011  
+0100  
+0101  
+0110  
+0111  
+1000  
+1001  
+1010  
+1011  
+1100  
+1101  
+1110  
+1111  
+
+1   load address to register
+2   load immediate
+3   store from register to address
+
+Three register logic
+4   AND
+5   NAND
+6   OR
+7   NOR
+8   XOR
+9   XNOR
+
+Three register arithmetic
+10  ADD
+11  SUB
+12  MULT
+13  DIV
+14  REM
+

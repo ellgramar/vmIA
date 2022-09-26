@@ -1,2 +1,4 @@
 # vmI
-A vm of a custom ISA
+A vm of a custom ISA, for learning
+
+
