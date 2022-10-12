@@ -1,55 +1,93 @@
-32 bit computer
+16 bit computer with indirect jumps/branches and load/store
 
-r0-r15:  GPRs (capable of load/store)
-special purpose registers:
-r16     PC (program counter)
-r17     SP (stack pointer)
-r18     LR (link register)
-r19     FP (frame pointer)
-r20     SR (status register)
-         nzct xxxx xxxx xxxx
-            n   indicates that the resulting value is negetive
-            z   indicates that the result of the operation resulted in zero
-            c   indicates that there was a carry or overflow
-            t   indicates that in signed integers, there was an overflow
+r0-r15 are GPRs
+r16   PC    Program Counter
+r17   SP    Stack Pointer
+r18   FP    Frame Pointer
+r19   LR    Link Register
+r20   AR    Accumulator Register (used in conjunction with TR, increments when activated)
+r21   TR    Target Register (set this to counter target)
+r22   SR    Status Register
+               znct ixxx xxxx xxxx
+               z  zero
+               n  negetive
+               c  carry/overflow
+               t  signed carry/overflow
+               i  interrupt flag
+
+First nibble opcodes
+x0    Escape to n2 opcodes
+x1    add
+x2    sub
+x3    mul
+x4    div
+x5    rem
+x6    and 
+x7    nnd 
+x8    orr 
+x9    nor 
+xa    xor 
+xb    xnr 
+xc    ldi   Load immediate (-2048->2047 | 0->4095)
+xd    lod   lod indirect
+xe    str   str indirect
+xf    jro   jump relative plus(/minus: -2048->2047) offset
+
+lod and str load to/from the register specified in nibble 2 from/to the 
+address specified in nibble 3 concatenated with nibble 4 in that order
+
+Second Nibble opcodes
+x00   Escape to n3 opcodes
+x01   mov   move n4 to n3
+x02   swp   swap n4 and n3
+x03   lhi   load high immediate: first nibble of reg[n3] set to n4
+x04   not   invert n4 and store in n3
+x05   cmp   compare n3, n4: n3 - n4
+x06   beq   branch if equal
+x07   bne   branch if not equal
+x08   bge   branch if greater than or equal to
+x09   bgt   branch if greater than 
+x0a   ble   branch if less than or equal
+x0b   blt   branch if less than
+x0c   jmp   indirect jump
+x0d
+x0e
+x0f
+
+Jumps and Branches store the address in the last two nibbles 
+which are concatenated together
 
 
-First 4 bits are the Instruction (INST)
-INST 1111 2222 3333 4444 555 6666 7777
+x000  Escape to n4 commands
+x001  inc   increment register
+x002  dec   decrement register
+x003  psh   mem[SP] = reg[n4], SP--
+x004  pop   SP++, reg[n4] = mem[SP]
+x005  sle   left shift (mul 2)
+x006  ssl   (signed shift left)
+x007  sri   shift right (fill with zeros, int div 2)
+x008  ssr   signed shift right
+x009  rol   rotate left
+x00a  srl   signed rotate left
+x00b  ror   rotate right
+x00c  srr   signed rotate right
+x00d  ars   AR Set to n4
+x00e  trs   TR set to n4 
+x00f  
 
-0000  
-0001  
-0010  
-0011  
-0100  
-0101  
-0110  
-0111  
-1000  
-1001  
-1010  
-1011  
-1100  
-1101  
-1110  
-1111  
-
-1   load address to register
-2   load immediate
-3   store from register to address
-
-Three register logic
-4   AND
-5   NAND
-6   OR
-7   NOR
-8   XOR
-9   XNOR
-
-Three register arithmetic
-10  ADD
-11  SUB
-12  MULT
-13  DIV
-14  REM
-
+x0000    ret   return from function (LR and FP)
+x0001    nop   PC++
+x0002    psha  push all registers to stack and decrement accordingly
+x0003    popa  opposit of psha
+x0004    clf   clear all flags
+x0005    clz   clear z flag
+x0006    cln   clear n flag
+x0007    clc   clear c flag
+x0008    clt   clear t flag
+x0009    
+x000a
+x000b
+x000c
+x000d
+x000e
+x000f    shutdown
