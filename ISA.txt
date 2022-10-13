@@ -1,4 +1,5 @@
 16 bit computer with indirect jumps/branches and load/store
+    but 32 bit byte addressable memory space 
 
 r0-r15 are GPRs
 r16   PC    Program Counter
@@ -14,6 +15,7 @@ r22   SR    Status Register
                c  carry/overflow
                t  signed carry/overflow
                i  interrupt flag
+               x  reserved
 
 First nibble opcodes
 x0    Escape to n2 opcodes
@@ -42,14 +44,15 @@ x01   mov   move n4 to n3
 x02   swp   swap n4 and n3
 x03   lhi   load high immediate: first nibble of reg[n3] set to n4
 x04   not   invert n4 and store in n3
-x05   cmp   compare n3, n4: n3 - n4
-x06   beq   branch if equal
-x07   bne   branch if not equal
-x08   bge   branch if greater than or equal to
-x09   bgt   branch if greater than 
-x0a   ble   branch if less than or equal
-x0b   blt   branch if less than
-x0c   jmp   indirect jump
+x05   cmp   compare n3, n4: reg[n3] - reg[n4]
+x06   cpi   compare immediates in n3 and n4 
+x07   beq   branch if equal
+x08   bne   branch if not equal
+x09   bge   branch if greater than or equal to
+x0a   bgt   branch if greater than 
+x0b   ble   branch if less than or equal
+x0c   blt   branch if less than
+x0d   jmp   indirect jump
 x0d
 x0e
 x0f
@@ -63,28 +66,28 @@ x001  inc   increment register
 x002  dec   decrement register
 x003  psh   mem[SP] = reg[n4], SP--
 x004  pop   SP++, reg[n4] = mem[SP]
-x005  sle   left shift (mul 2)
-x006  ssl   (signed shift left)
-x007  sri   shift right (fill with zeros, int div 2)
-x008  ssr   signed shift right
-x009  rol   rotate left
-x00a  srl   signed rotate left
-x00b  ror   rotate right
-x00c  srr   signed rotate right
-x00d  ars   AR Set to n4
-x00e  trs   TR set to n4 
+x005  trs   TR set to reg[n4]
+x006  sle   left shift (mul 2)
+x007  ssl   (signed shift left)
+x008  sri   shift right (fill with zeros, int div 2)
+x009  ssr   signed shift right
+x00a  rol   rotate left
+x00b  srl   signed rotate left
+x00c  ror   rotate right
+x00d  srr   signed rotate right 
+x00e   
 x00f  
 
 x0000    ret   return from function (LR and FP)
 x0001    nop   PC++
 x0002    psha  push all registers to stack and decrement accordingly
 x0003    popa  opposit of psha
-x0004    clf   clear all flags
-x0005    clz   clear z flag
-x0006    cln   clear n flag
-x0007    clc   clear c flag
-x0008    clt   clear t flag
-x0009    
+x0004    ara   Accumulator Register Activate (start counting on every PC++)
+x0005    clf   clear all flags
+x0006    clz   clear z flag
+x0007    cln   clear n flag
+x0008    clc   clear c flag
+x0009    clt   clear t flag
 x000a
 x000b
 x000c
