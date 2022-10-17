@@ -10,6 +10,8 @@
 #include <sys/termios.h>
 #include <unistd.h>
 
+#include "io.h"
+
 //  structures
 uint16_t mem[0xffffffff];
 
