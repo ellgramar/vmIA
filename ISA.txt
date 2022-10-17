@@ -1,5 +1,5 @@
 16 bit computer with indirect jumps/branches and load/store
-    but 32 bit byte addressable memory space 
+    but 31 bit addressable memory space (4 gig total memory limit for Macbook)
 
 r0-r15 are GPRs
 r16   PC    Program Counter
@@ -9,13 +9,14 @@ r19   LR    Link Register
 r20   AR    Accumulator Register (used in conjunction with TR, increments when activated)
 r21   TR    Target Register (set this to counter target)
 r22   SR    Status Register
-               znct ixxx xxxx xxxx
+               znct ispp pppp pppp
                z  zero
                n  negetive
                c  carry/overflow
                t  signed carry/overflow
                i  interrupt flag
-               x  reserved
+               s  screen flag, raised when input is detected. sort of an interrupt
+               p  position flags to indicate position when s flag is raised
 
 First nibble opcodes
 x0    Escape to n2 opcodes
@@ -31,12 +32,29 @@ x9    nor
 xa    xor 
 xb    xnr 
 xc    ldi   Load immediate (-2048->2047 | 0->4095)
-xd    lod   lod indirect
-xe    str   str indirect
+xd    lod   load indirect / input if r3 > 0x7fff
+xe    str   stor indirect / output (char)
 xf    jro   jump relative plus(/minus: -2048->2047) offset
 
 lod and str load to/from the register specified in nibble 2 from/to the 
 address specified in nibble 3 concatenated with nibble 4 in that order
+
+The screen object is 25 rows and 80 cols giving 2000 positions
+these are indexed from 0 to 1999 with positions 2000-2047 being alternate i/o.
+If the first register (specified by n2) is greater than or equal to 0x8000,
+then instead of store to memory, the value in reg[n2] is masked with 
+0x7fff to remove the first bit, then that ascii equivalent character
+is sent to the screen at the position specified in the lower two nibbles
+of reg[n3] concatinated with reg[n4]. For lod, the value stored at the location 
+specified by the lower two nibbles 
+
+
+E.G. let R0 = 0x0041 (= A = 65 dec), R1 = 0x8000 and R2 = 0x0000; then:
+the letter a is loaded into the top left corner or position 0.
+instr:  lod r0, r3, r1;
+machine code = 0xe 0x0 0x1 0x2 = 1110 0000 0001 0010
+
+
 
 Second Nibble opcodes
 x00   Escape to n3 opcodes
@@ -53,12 +71,17 @@ x0a   bgt   branch if greater than
 x0b   ble   branch if less than or equal
 x0c   blt   branch if less than
 x0d   jmp   indirect jump
-x0d
-x0e
-x0f
+x0e   sco   screen output
+x0f   sci   screen input
 
 Jumps and Branches store the address in the last two nibbles 
 which are concatenated together
+
+The screen object is 25 rows and 80 columns giving 2000 locations.
+For store (str), the character to be written to is located in reg[n3]
+while the location is specified by the lower 12 bits in reg[n4]. For 
+load (lod), the location stored in the lower 12 bits of reg[n4] is 
+stored in reg[n3]
 
 
 x000  Escape to n4 commands
@@ -88,7 +111,7 @@ x0006    clz   clear z flag
 x0007    cln   clear n flag
 x0008    clc   clear c flag
 x0009    clt   clear t flag
-x000a
+x000a    cls   clear s flag
 x000b
 x000c
 x000d
