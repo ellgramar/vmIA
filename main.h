@@ -1,3 +1,9 @@
+/* This is the file that actually runs the computer.
+it is  involved in setting up the memory space,
+and running the program
+
+The goal is to remove as much std includes from this file as possible*/
+
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -9,10 +15,10 @@
 //  needed for i/o support
 #include <sys/termios.h>
 #include <unistd.h>
-
+// project includes
 #include "io.h"
 
-//  structures
-uint16_t mem[0xffffffff];
+
+extern int errno;
 
 #endif

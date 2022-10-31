@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I .
-DEPS = main.h io.h
-OBJ = main.c io.c
+DEPS = comp.h instr.h io.h main.h 
+OBJ = comp.c instr.c io.c main.c 
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
